@@ -1,0 +1,117 @@
+= SUSE Distribution Migration System
+Marcus Schäfer; Jesús Velázquez
+
+:toc:
+:icons: font
+:numbered:
+
+:Authors: Marcus Schäfer and Jesús Bermúdez Velázquez
+:Publication_Date: TBD
+:Latest_Version: 0.5.15
+:Contributors: 
+:Repo: https://github.com/SUSE/suse-migration-services[suse-migration-services]
+
+ifdef::env-github[]
+//Admonitions
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+[%hardbreaks]
+Authors: {Authors}
+Contributors: {Contributors}
+Publication Date: {Publication_Date}
+Latest Version: {Latest_Version}
+Code available: {Repo}
+
+== Concept
+The Distribution Migration System provides an upgrade path for an installed SUSE Linux Enterprise system from on major distribution to another, for example, from SUSE Linux Enterprise Server 12 SP4 to SUSE Linux Enterprise Server 15. For system updates from one Service Pack (SP) to another within a given major distribution release series the existing
+
+[listing]
+zypper migration
+
+functionality is the supported upgrade path. The distribution migration system provides the ability to migrate across major distributions without the need to use the next major version installation media to perform the system migration.
+
+The migration between two major distribution versions requires the system to be migrated to be off line to avoid system inconsistencies that may leave the system in a state that does not allow recovery. This behavior is implemented using a Live Migration Image.
+
+The distribution migration system provides the live image and a component that modifies the bootloader configuration such that on the next boot the system will boot into the migration image. Once booted into the migration live image the following chain of services will be executed:
+
+- detect the system to be migrated
+- mount the necessary file systems
+- setup the network to match the network configuration of the system to be migrated
+- prepare the package manager for the migration task
+- migrate the system
+- update the boot loader configuration
+- unmount all mounted file systems
+- reboot
+
+Should an error occur prior to the start of the actual migration the system will be returned to it's original state.
+
+== Requirements
+The system to be migrated must be registered. Pay as you go instances in the Public Cloud are automatically registered to the SUSE operated update infrastructure. All other systems must be connected to the SUSE Customer Center (SCC), a Subscription Management Tool (SMT), or a Repository Management tool (RMT) server. For system managed via SUSE Manager use the migration path provided by SUSE Manager. 
+
+== Recommendation
+During the migration it is not possible to log into the system in any other way then ssh key based login. If your system does not have such a configuration it is recommended that at least one of the users on the system has a '~/.ssh/authorized_keys' file with a private key accessible by the person executing the system migration.
+
+== Installation
+
+The distribution migration system is made available in the Public Cloud module. Therefore this module has to be enable on the system to be migrated. For running on-demand instances this module is already enabled in the instance.
+
+For data center customers it is recommended to continue to use the documented offline distribution migration using the next distribution version installation media.
+
+To install the distribution migration system execute as root
+
+[listing]
+$ zypper in SLE15-Migration suse-migration-sle15-activation
+
+== Run migration
+
+The suse_migration_activation package configure the boot loader to boot into the live image and that will execute the migration automatically. After the installation of the packages is complete execute
+
+[listing]
+$ reboot
+
+to run the migration process.
+
+When the migration has started, the only way to access the system during the
+migration process is through ssh with a user called *migration*, for example:
+
+[listing]
+$ ssh migration@IP_OF_INSTANCE
+
+NOTE: There is no need to provide any other information or key. The known ssh keys on the system to be migrated have been imported into the migration system. Password based login is not possible.
+
+== Debugging the migration
+Once the migration has finished and the system has rebooted, the file
+'/etc/issue' points to the log of migration, if a failure has been detected.
+
+In order to debug a failed migration, the file '/etc/sle-migration-service'
+must exist prior to the start of the migration process. This file will prevent the migration system from rewinding the setup steps and rebooting due to a failed migration, allowing the issue to be debugged.
+
+[source,bash]
+----
+$ ssh INSTANCE_USER@IP_OF_INSTANCE
+
+$ sudo touch /etc/sle-migration-service
+----
+
+If the migration succeeded and that file is present,
+it will be ignored and removed, the system will reboot normally
+into the newer version.
+
+== After the migration
+Whether the migration succeeded or not, a log file is available in
+`/var/log/distro_migration.log` and it will contain information
+about the migration process. Should the migration have failed and the issues are understood and addressed the file '/etc/issue' should be cleared.
+
+== Caveats and unsupported conditions
+* Files marked as configuration files in RPM packages and modified will have a corresponding '.rpmnew' version in the same location.
+** Public Cloud instances from SUSE images have a custom '/etc/motd' file that makes reference the distribution version this needs to be modified manually
+* Repositories not registered via SUSEConnect and added to the system manually will remain untouched.
+* For Public Cloud instances the metadata will not change, as far as the cloud framework is concerned you will still be running a SLES 12 SP4 instance even if you migrated the instance to SLES 15. This cannot be changed.
+* Migration is only possible for systems that have direct access to the root file system by the boot loader.
+* Migration is only possible for systems that use unencrypted root file systems, at the OS level. Encrypting the root device using a cloud framework encryption mechanism happens at a different level.
+* Migration has been tested for SLES 12 SP4 to SLES 15
