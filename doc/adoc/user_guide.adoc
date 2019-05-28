@@ -28,7 +28,7 @@ Latest Version: {Latest_Version}
 Code available: {Repo}
 
 == Concept
-The Distribution Migration System provides an upgrade path for an installed SUSE Linux Enterprise system from on major distribution to another, for example, from SUSE Linux Enterprise Server 12 SP4 to SUSE Linux Enterprise Server 15. For system updates from one Service Pack (SP) to another within a given major distribution release series the existing
+The Distribution Migration System provides an upgrade path for an installed SUSE Linux Enterprise system from one major version to another, for example, from SUSE Linux Enterprise Server 12 SP4 to SUSE Linux Enterprise Server 15. For a service pack migration from one Service Pack (SP) to another within a given major version release series the existing
 
 [listing]
 zypper migration
