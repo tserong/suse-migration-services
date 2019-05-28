@@ -48,7 +48,7 @@ The distribution migration system provides the live image and a component that m
 - unmount all mounted file systems
 - reboot
 
-Should an error occur prior to the start of the actual migration the system will be returned to it's original state.
+In case an error occurs prior to the start of the migration the system will be reverted to its original state.
 
 == Requirements
 The system to be migrated must be registered. Pay as you go instances in the Public Cloud are automatically registered to the SUSE operated update infrastructure. All other systems must be connected to the SUSE Customer Center (SCC), a Subscription Management Tool (SMT), or a Repository Management tool (RMT) server. For system managed via SUSE Manager use the migration path provided by SUSE Manager. 
