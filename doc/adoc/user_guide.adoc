@@ -109,7 +109,7 @@ about the migration process. Should the migration have failed and the issues are
 
 == Caveats and Unsupported Conditions
 * Configuration files that have been modified in the original system will not be overwritten by the upgrade process. The new version of the respective configuration file will be copied into the same directory with the file name extension `.rpmnew`. It is recommended to compare the existing and the new configuration files and make manual adjustments when needed.
-** Public Cloud instances from SUSE images have a custom '/etc/motd' file that makes reference the distribution version this needs to be modified manually
+* Public Cloud instances from SUSE images have a custom `/etc/motd` file that makes a reference the distribution version. This needs to be updated manually manually after the migration.
 * Repositories not registered via SUSEConnect and added to the system manually will remain untouched.
 * For Public Cloud instances the metadata will not change, as far as the cloud framework is concerned you will still be running a SLES 12 SP4 instance even if you migrated the instance to SLES 15. This cannot be changed.
 * Migration is only possible for systems that have direct access to the root file system by the boot loader.
