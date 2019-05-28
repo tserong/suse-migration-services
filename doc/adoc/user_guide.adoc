@@ -107,7 +107,7 @@ Whether the migration succeeded or not, a log file is available in
 `/var/log/distro_migration.log` and it will contain information
 about the migration process. Should the migration have failed and the issues are understood and addressed the file '/etc/issue' should be cleared.
 
-== Caveats and unsupported conditions
+== Caveats and Unsupported Conditions
 * Files marked as configuration files in RPM packages and modified will have a corresponding '.rpmnew' version in the same location.
 ** Public Cloud instances from SUSE images have a custom '/etc/motd' file that makes reference the distribution version this needs to be modified manually
 * Repositories not registered via SUSEConnect and added to the system manually will remain untouched.
