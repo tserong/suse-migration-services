@@ -35,7 +35,7 @@ zypper migration
 
 functionality is the supported upgrade path. The distribution migration system provides the ability to migrate across major distributions without the need to use the next major version installation media to perform the system migration.
 
-The migration between two major distribution versions requires the system to be migrated to be off line to avoid system inconsistencies that may leave the system in a state that does not allow recovery. This behavior is implemented using a Live Migration Image.
+The migration to a new major versions requires the system to be offline during he migration to avoid system inconsistencies that may leave the system in a state that does not allow recovery. This behavior is implemented using a Live Migration Image.
 
 The distribution migration system provides the live image and a component that modifies the bootloader configuration such that on the next boot the system will boot into the migration image. Once booted into the migration live image the following chain of services will be executed:
 
